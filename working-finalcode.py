@@ -9,8 +9,11 @@ from ast import literal_eval
 import requests
 import time
 import streamlit.components.v1 as components
-from scipy.linalg import triu
 
+
+def triu_custom(A, k=0):
+    return np.triu(A, k)
+    
 # TMDB API key
 TMDB_API_KEY = 'aad48407a8c1adecea9cc23891d3181a'  # Replace with your actual TMDB API key
 
