@@ -2,7 +2,7 @@ numpy
 pandas
 matplotlib
 seaborn
-scipy
+scipy>=1.10.0
 scikit-learn
 nltk
 gensim
