@@ -27,7 +27,7 @@ def load_and_preprocess_data():
     keyword = pd.read_csv('data/keywords.csv')
 
     # Data preprocessing
-    movies_data = movies_data.drop([19730, 29503, 35587], errors="ignore")
+    movies_data = movies_data.drop([19730, 29503, 35587])
     movies_data['id'] = movies_data['id'].astype('int')
     link_small = link_small[link_small['tmdbId'].notnull()]['tmdbId'].astype('int')
     
@@ -112,9 +112,25 @@ def get_movie_details(movie_name):
     row = movie_row.iloc[0]
     title = row['title']
     overview = row['overview']
+    overview = overview[0] if isinstance(overview, list) and overview else overview
     director = ', '.join(set(row['directors']))
-    rating = row['vote_average'] if 'vote_average' in row else "N/A"
+    rating = f"⭐ {row['vote_average']}/10" if 'vote_average' in row else "N/A"
     release_date = row['release_date'] if 'release_date' in row else "N/A"
+    genres = ', '.join([genre['name'] for genre in eval(row['genres'])]) if 'genres' in row and not pd.isna(row['genres']) else "N/A"
+    budget = f"${int(row['budget']):,}" if row['budget'] and row['budget'] != 0 else "N/A"
+    revenue = f"${int(row['revenue']):,}" if row['revenue'] and row['revenue'] != 0 else "N/A"
+    runtime = f"{int(row['runtime'])} minutes" if row['runtime'] and not pd.isna(row['runtime']) else "N/A"
+    production_companies = ', '.join(
+        [company['name'] for company in eval(row['production_companies'])]
+    ) if 'production_companies' in row and not pd.isna(row['production_companies']) else "N/A"
+    production_countries = ', '.join(
+        [country['name'] for country in eval(row['production_countries'])]
+    ) if 'production_countries' in row and not pd.isna(row['production_countries']) else "N/A"
+    homepage = row['homepage'] if 'homepage' in row else "N/A"
+    popularity = f"{row['popularity']:.2f}" if 'popularity' in row else "N/A"
+    spoken_languages = ', '.join(
+        [lang['name'] for lang in eval(row['spoken_languages'])]
+    ) if 'spoken_languages' in row and not pd.isna(row['spoken_languages']) else "N/A"
     poster_url = get_movie_poster(row['id'])
 
     # Card-style UI with HTML and CSS
@@ -146,6 +162,9 @@ def get_movie_details(movie_name):
             font-size: 1em;
             margin: 5px 0;
         }}
+        .movie-info strong {{
+            color: #f39c12;
+        }}
     </style>
     <div class="movie-card">
         <img class="movie-poster" src="{poster_url}" alt="{title} poster">
@@ -154,11 +173,23 @@ def get_movie_details(movie_name):
             <div class="movie-info"><strong>Release Date:</strong> {release_date}</div>
             <div class="movie-info"><strong>Director:</strong> {director}</div>
             <div class="movie-info"><strong>Rating:</strong> {rating}</div>
+            <div class="movie-info"><strong>Genres:</strong> {genres}</div>
+            <div class="movie-info"><strong>Budget:</strong> {budget}</div>
+            <div class="movie-info"><strong>Revenue:</strong> {revenue}</div>
+            <div class="movie-info"><strong>Runtime:</strong> {runtime}</div>
+            <div class="movie-info"><strong>Production Companies:</strong> {production_companies}</div>
+            <div class="movie-info"><strong>Production Countries:</strong> {production_countries}</div>
+            <div class="movie-info"><strong>Popularity:</strong> {popularity}</div>
+            <div class="movie-info"><strong>Spoken Languages:</strong> {spoken_languages}</div>
+            <div class="movie-info"><strong>Homepage:</strong> <a href="{homepage}" target="_blank">{homepage}</a></div>
             <div class="movie-info"><strong>Overview:</strong> {overview}</div>
         </div>
     </div>
     """
-    return components.html(card_html, height=500)
+    return components.html(card_html, height=600)
+
+
+
 
 def get_vote_average(movie_name):
     movie_row = smd2[smd2['title'].str.contains(movie_name, case=False)]
