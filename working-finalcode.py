@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from numpy import triu
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from nltk.stem.snowball import SnowballStemmer
