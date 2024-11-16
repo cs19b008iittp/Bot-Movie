@@ -1,6 +1,6 @@
 # Movie Chatbot
-This is an interactive movie recommendation system that suggests top movies based on your preferences, genres, actors, directors, or any movie-related queries.
+This movie chatbot accepts any input from users and recommends a movie based on their preferences. Additionally, users can enter the name of a movie to receive more detailed information about it.
 
-Website Link:
+# Website Link:
 https://bot-movie-recommender.streamlit.app/
 
