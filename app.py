@@ -14,10 +14,10 @@ from gensim.parsing.preprocessing import remove_stopwords
 import streamlit as st
 pd.pandas.set_option('display.max_columns',None)
 
-movies_data = pd.read_csv('movie-recommendation-chatbot\data\movies_metadata.csv')
-link_small = pd.read_csv('movie-recommendation-chatbot\data\links_small.csv')
-credits = pd.read_csv('movie-recommendation-chatbot\data\credits.csv')
-keyword = pd.read_csv('movie-recommendation-chatbot\data\keywords.csv')
+movies_data = pd.read_csv('./data/movies_metadata.csv')
+link_small = pd.read_csv('./data/links_small.csv')
+credits = pd.read_csv('./data/credits.csv')
+keyword = pd.read_csv('./data/keywords.csv')
 
 # Removing rows with the index labels 19730, 29503, and 35587
 movies_data = movies_data.drop([19730, 29503, 35587])
@@ -131,7 +131,7 @@ def getPredictionsV2(soup, smd, num):
   d["soup"] = stemmed_soup
 
   d["title"] = "myRequest"
-  smd = smd.append(d, ignore_index=True)
+  smd = pd.concat([smd, pd.DataFrame([d])], ignore_index=True)
 
   tf = TfidfVectorizer(analyzer='word',ngram_range=(1,2),min_df=0,stop_words='english')
   tfid_mat = tf.fit_transform(smd['soup'])
@@ -206,4 +206,4 @@ if prompt := st.chat_input("Send a message"):
     with st.chat_message("assistant"):
         st.markdown(response)
     # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.session_state.messages.append({"role": "assistant", "content": response}) 
